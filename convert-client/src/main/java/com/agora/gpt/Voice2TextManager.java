@@ -145,11 +145,22 @@ class Voice2TextManager implements LifecycleObserver {
             config.mEventHandler = new IRtcEngineEventHandler() {
                 @Override
                 public void onJoinChannelSuccess(String s, int i, int i1) {
-                    Log.d(TAG, "onJoinChannelSuccess");
+                    Log.d(TAG, "mRtcEngine onJoinChannelSuccess");
                 }
 
+                @Override
+                public void onError(int err) {
+                    super.onError(err);
+                    Log.d(TAG, "mRtcEngine onError err="+err);
+                }
             };
             mRtcEngine = RtcEngine.create(config);
+            mRtcEngine.setParameters("{\"che.audio.ains_mode\":2}");
+            mRtcEngine.setParameters("{\"che.audio.nsng.lowerBound\":10}");
+            mRtcEngine.setParameters("{\"che.audio.nsng.lowerMask\":10}");
+            mRtcEngine.setParameters("{\"che.audio.nsng.statisticalbound\":0}");
+            mRtcEngine.setParameters("{\"che.audio.nsng.finallowermask\":8}");
+            mRtcEngine.setParameters("{\"che.audio.nsng.enhfactorstastical\":200}");
             mRtcEngine.enableExtension(ExtensionManager.EXTENSION_VENDOR_NAME,
                     ExtensionManager.EXTENSION_AUDIO_FILTER_NAME, true);
             // // 设置logcat日志等级
