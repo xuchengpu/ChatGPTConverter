@@ -147,12 +147,6 @@ class Voice2TextManager implements LifecycleObserver {
                 public void onJoinChannelSuccess(String s, int i, int i1) {
                     Log.d(TAG, "mRtcEngine onJoinChannelSuccess");
                 }
-
-                @Override
-                public void onError(int err) {
-                    super.onError(err);
-                    Log.d(TAG, "mRtcEngine onError err="+err);
-                }
             };
             mRtcEngine = RtcEngine.create(config);
             mRtcEngine.setParameters("{\"che.audio.ains_mode\":2}");
