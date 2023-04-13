@@ -14,6 +14,7 @@ import okhttp3.Response;
 
 
 class ChatGPTManager {
+    private final String Tag=getClass().getSimpleName();
     private static final ChatGPTManager ourInstance = new ChatGPTManager();
     private ConvertListener listener;
     private boolean isInited=false;
@@ -21,6 +22,7 @@ class ChatGPTManager {
     private static final String API_BASE_URL = BuildConfig.chatgpt_api_base_url;
     private OkHttpClient client;
     MediaType mediaType = MediaType.parse("application/json");
+    private RequestBodyBean requestBodyBean=new RequestBodyBean();
 
     static ChatGPTManager getInstance() {
         return ourInstance;
@@ -40,6 +42,8 @@ class ChatGPTManager {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .callTimeout(60, TimeUnit.SECONDS)
                 .build();
+        requestBodyBean.setMessages(new FixSizeList<>(10));
+
     }
 
     public void setChatGPTListener(ConvertListener listener){
@@ -70,16 +74,16 @@ class ChatGPTManager {
     }
 
     private String executeRequest(String question) throws IOException {
+        RequestBodyBean.Messages messages=new RequestBodyBean.Messages();
+        messages.setRole("user");
+        messages.setContent(question);
+        requestBodyBean.getMessages().add(messages);
+        String messagesBody = new Gson().toJson(requestBodyBean);
         RequestBody body = RequestBody.create(
                 mediaType,
-                "{\n" +
-                        "    \"questions\":[ \"" + question + "\"]\n" +
-//                        "    \"temperature\": 0.5,\n" +
-//                        "    \"max_tokens\": 1000,\n" +
-//                        "    \"n\": 1,\n" +
-//                        "    \"stop\": null,\n" +
-//                        "    \"model\": \"text-davinci-003\"\n" +
-                        "}");
+                messagesBody
+                );
+//        Log.e(Tag, "convert messagesBody="+messagesBody);
 
         Request request = new Request.Builder()
                 .url(API_BASE_URL)
@@ -96,6 +100,10 @@ class ChatGPTManager {
         }
         String responseBody = response.body().string();
         ChatGPTBean result = new Gson().fromJson(responseBody, ChatGPTBean.class);
+        RequestBodyBean.Messages messages_response=new RequestBodyBean.Messages();
+        messages_response.setRole("assistant");
+        messages_response.setContent(result.getAnswer());
+        requestBodyBean.getMessages().add(messages_response);
         return result.getAnswer();
     }
 }
