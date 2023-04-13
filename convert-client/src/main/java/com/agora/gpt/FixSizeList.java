@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 class FixSizeList<T> extends ArrayList<T> {
 
-    private final int capacity;
+    private  int capacity;
 
     public FixSizeList(int capacity) {
         super();
@@ -26,5 +26,12 @@ class FixSizeList<T> extends ArrayList<T> {
             super.remove(0);
         }
         return super.add(t);
+    }
+
+    public void setCapacity(int capacity){
+        if (capacity <= 0) {
+            capacity = 1;
+        }
+        this.capacity = capacity;
     }
 }

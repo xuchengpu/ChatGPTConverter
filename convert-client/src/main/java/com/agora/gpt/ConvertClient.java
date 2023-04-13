@@ -11,6 +11,7 @@ public class ConvertClient {
     private static final ConvertClient ourInstance = new ConvertClient();
     private ConvertListener listener;
     private int index=0;
+    private boolean debugMode;
 
     public static ConvertClient getInstance() {
         return ourInstance;
@@ -58,6 +59,43 @@ public class ConvertClient {
      */
     public void stopVoice2Text(){
         Voice2TextManager.getInstance().stopListening();
+    }
+
+    /**
+     * 问chatgpt问题
+     * @param markIndex 用于标记question的索引，可随便传一个
+     * @param question 要问chat-gpt的问题
+     */
+    public void sendQuestionToChatGPT(int markIndex,String question){
+        ChatGPTManager.getInstance().sendQuestionToChatGPT(markIndex,question);
+    }
+
+    /**
+     * 问chatgpt问题
+     * @param question 要问chat-gpt的问题
+     */
+    public void sendQuestionToChatGPT(String question){
+        ChatGPTManager.getInstance().sendQuestionToChatGPT(-1,question);
+    }
+
+    /**
+     * 拿到请求chat-gpt的请求体
+     * @return
+     */
+    public RequestBody getRequestBody(){
+        return ChatGPTManager.getInstance().getRequestBody();
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    /**
+     * 设置是否debug模式，true:开启日志 false:关闭内部日志
+     * @param debugMode
+     */
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     /**

@@ -5,7 +5,7 @@ package com.agora.gpt;
  * qq:1550540124
  * 热爱生活每一天！
  */
-public class RequestBodyBean {
+public class RequestBody {
 
    private FixSizeList<Messages> messages;
 
