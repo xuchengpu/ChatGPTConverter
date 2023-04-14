@@ -44,6 +44,7 @@ class ChatGPTManager {
                 .callTimeout(60, TimeUnit.SECONDS)
                 .build();
         requestBody.setMessages(new FixSizeList<>(20));
+        requestBody.setModel(ChatGptModel.GPT_35);
 
     }
 
