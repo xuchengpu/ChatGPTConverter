@@ -14,16 +14,17 @@ class FixSizeList<T> extends ArrayList<T> {
 
     public FixSizeList(int capacity) {
         super();
-        if (capacity <= 0) {
-            capacity = 1;
+        if (capacity <= 1) {
+            capacity = 2;
         }
+        add(0,null);
         this.capacity = capacity;
     }
 
     public boolean add(T t) {
         // 超过长度，移除第一个
-        if (size() >= capacity && size() != 0) {
-            super.remove(0);
+        if (size() >= capacity ) {
+            super.remove(1);
         }
         return super.add(t);
     }
@@ -33,5 +34,22 @@ class FixSizeList<T> extends ArrayList<T> {
             capacity = 1;
         }
         this.capacity = capacity;
+    }
+
+    public void addSystemParams(T t){
+        add(0,t);
+    }
+
+    public void removeAllHistory() {
+        for (int i = 1; i < size(); i++) {
+            remove(i);
+        }
+    }
+
+    public void setMemoryLength(int length) {
+        if (capacity <= 1) {
+            length = 2;
+        }
+        this.capacity=length;
     }
 }

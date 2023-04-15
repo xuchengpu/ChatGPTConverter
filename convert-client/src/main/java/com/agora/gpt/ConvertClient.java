@@ -10,8 +10,9 @@ public class ConvertClient {
     private WeakReference<FragmentActivity> activityRef;
     private static final ConvertClient ourInstance = new ConvertClient();
     private ConvertListener listener;
-    private int index=0;
+    private int index = 0;
     private boolean debugMode;
+    private boolean isAutoVoice2Text = true;
 
     public static ConvertClient getInstance() {
         return ourInstance;
@@ -22,9 +23,12 @@ public class ConvertClient {
         @Override
         public void onIstText(String text) {
             if (listener != null) {
-                listener.onVoice2Text(index,text);
+                listener.onVoice2Text(index, text);
             }
-            ChatGPTManager.getInstance().sendQuestionToChatGPT(index++,text);
+            if (isAutoVoice2Text) {
+                ChatGPTManager.getInstance().sendQuestionToChatGPT(index, text);
+            }
+            index++;
         }
     };
 
@@ -57,32 +61,35 @@ public class ConvertClient {
     /**
      * 停止语音转文字
      */
-    public void stopVoice2Text(){
+    public void stopVoice2Text() {
         Voice2TextManager.getInstance().stopListening();
     }
 
     /**
      * 问chatgpt问题
+     *
      * @param markIndex 用于标记question的索引，可随便传一个
-     * @param question 要问chat-gpt的问题
+     * @param question  要问chat-gpt的问题
      */
-    public void sendQuestionToChatGPT(int markIndex,String question){
-        ChatGPTManager.getInstance().sendQuestionToChatGPT(markIndex,question);
+    public void sendQuestionToChatGPT(int markIndex, String question) {
+        ChatGPTManager.getInstance().sendQuestionToChatGPT(markIndex, question);
     }
 
     /**
      * 问chatgpt问题
+     *
      * @param question 要问chat-gpt的问题
      */
-    public void sendQuestionToChatGPT(String question){
-        ChatGPTManager.getInstance().sendQuestionToChatGPT(-1,question);
+    public void sendQuestionToChatGPT(String question) {
+        ChatGPTManager.getInstance().sendQuestionToChatGPT(-1, question);
     }
 
     /**
      * 拿到请求chat-gpt的请求体
+     *
      * @return
      */
-    public RequestBody getRequestBody(){
+    public RequestBody getRequestBody() {
         return ChatGPTManager.getInstance().getRequestBody();
     }
 
@@ -92,10 +99,55 @@ public class ConvertClient {
 
     /**
      * 设置是否debug模式，true:开启日志 false:关闭内部日志
+     *
      * @param debugMode
      */
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
+    }
+
+    /**
+     * 设置请求chatgpt的系统system预设，注意会清除掉以前的记忆
+     *
+     * @param content
+     */
+    public void setSystem(String content) {
+        ChatGPTManager.getInstance().setSystem(content);
+    }
+
+    /**
+     * 设置请求chat-gpt记忆条数，不设置的话默认20条记忆
+     *
+     * @param length
+     */
+    public void setMemoryLength(int length) {
+        ChatGPTManager.getInstance().setMemoryLength(length);
+    }
+
+    /**
+     * 设置chan-gpt 的模型
+     * @param model  参考{@link ChatGptModel}
+     */
+    public void setChatGptModel(ChatGptModel model){
+        ChatGPTManager.getInstance().setChatGptModel(model);
+    }
+
+    /**
+     * 是否自动语音转文字
+     *
+     * @return
+     */
+    public boolean isAutoVoice2Text() {
+        return isAutoVoice2Text;
+    }
+
+    /**
+     * 设置是否自动语音转文字
+     *
+     * @param autoVoice2Text
+     */
+    public void setAutoVoice2Text(boolean autoVoice2Text) {
+        isAutoVoice2Text = autoVoice2Text;
     }
 
     /**
@@ -111,9 +163,10 @@ public class ConvertClient {
 
     /**
      * 开始语音转文字
+     *
      * @param text
      */
-    public void startText2Voice(int index,String text) {
-        Text2VoiceManager.getInstance().startText2Voice(index,text);
+    public void startText2Voice(int index, String text) {
+        Text2VoiceManager.getInstance().startText2Voice(index, text);
     }
 }
